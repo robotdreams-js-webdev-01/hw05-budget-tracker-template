@@ -1,0 +1,62 @@
+name: CI – HW05
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Gyökér függőségek telepítése
+        run: npm install
+
+      - name: Prisma client generálás
+        # 24. óra: Prisma client generálása a tesztek előtt szükséges
+        run: cd apps/api && npm install && npx prisma generate
+
+      - name: TypeScript ellenőrzés (API)
+        run: cd apps/api && npx tsc --noEmit
+
+      - name: Rejtett tesztek előkészítése
+        env:
+          HIDDEN_TEST_B64: ${{ secrets.HIDDEN_TEST_HW05 }}
+        run: |
+          mkdir -p .hidden-tests/hw05
+          if [ -n "$HIDDEN_TEST_B64" ]; then
+            echo "$HIDDEN_TEST_B64" | base64 -d > .hidden-tests/hw05/hw05.spec.js
+            echo "✅ Rejtett tesztek betöltve."
+          else
+            echo "ℹ️ HIDDEN_TEST_HW05 secret nincs beállítva – csak alapvető tesztek futnak."
+          fi
+
+      - name: Tesztek futtatása
+        run: npm test
+
+  score:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Pontszám kiszámítása
+        run: node .github/scripts/computeScore.js
+
+      - name: Pontszám feltöltése artifactként
+        uses: actions/upload-artifact@v4
+        with:
+          name: hw05-score
+          path: hw05-score.json
+          retention-days: 90

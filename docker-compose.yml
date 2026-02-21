@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  # 24. óra: PostgreSQL adatbázis
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: budget_tracker
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U user -d budget_tracker']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # 20–24. óra: Express API + Prisma
+  api:
+    build:
+      context: .
+      dockerfile: ./apps/api/Dockerfile
+    ports:
+      - '3001:3001'
+    environment:
+      DATABASE_URL: 'postgresql://user:password@postgres:5432/budget_tracker'
+      PORT: 3001
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # 20–25. óra: Next.js frontend
+  web:
+    build: ./apps/web
+    ports:
+      - '3000:3000'
+    environment:
+      NEXT_PUBLIC_API_URL: 'http://localhost:3001'
+    depends_on:
+      - api
+
+volumes:
+  postgres_data:
