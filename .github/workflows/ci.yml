@@ -41,8 +41,22 @@ jobs:
       - name: Tesztek futtatása
         run: npm test
 
+      - name: Teszt eredmények feltöltése (pontozáshoz)
+        if: always()
+        run: |
+          if [ ! -f jest-results.json ]; then
+            echo '{"numPassedTests":0,"numTotalTests":0}' > jest-results.json
+          fi
+      - name: Eredmény artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: jest-results.json
+
   score:
     needs: build-and-test
+    if: always() && needs.build-and-test.result != 'cancelled'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -50,6 +64,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+
+      - name: Teszt eredmények letöltése
+        uses: actions/download-artifact@v4
+        with:
+          name: test-results
+      - name: Eredmények a pontozó számára
+        run: cp test-results/jest-results.json ./jest-results.json 2>/dev/null || echo '{"numPassedTests":0,"numTotalTests":0}' > jest-results.json
 
       - name: Pontszám kiszámítása
         run: node .github/scripts/computeScore.js
