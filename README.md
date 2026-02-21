@@ -99,15 +99,29 @@ Az **élő URL-eket** írd bele a README-be!
 
 | Kritérium | Pont |
 |---|---|
-| Backend CRUD (helyes endpointok, státuszkódok, hibakezelés) | 20p |
-| Frontend UI (form, lista, balance, loading/error állapotok) | 20p |
-| DB integráció (Prisma, migráció, relációk, seed opcionális) | 20p |
-| Tesztek (min. 3, CI-ben futnak, értelmesek) | 20p |
-| DevOps (Docker, deploy, README setup guide, `.env.example`) | 20p |
+| `apps/api/src/index.ts` TODO-k (POST/GET/DELETE + hibakezelés) | 30p |
+| `apps/web/app/page.tsx` TODO-k (fetch, form, lista, balance, loading/error) | 30p |
+| Prisma + migráció + DB kapcsolat | 20p |
+| Docker + README setup + deploy URL-k | 10p |
+| Min. 3 értelmes teszt | 10p |
+
+Megjegyzés: a vizuális/oktatói ellenőrzés kis arányú; a pontok többsége automatikusan adódik.
 
 ---
 
 ## Lokális futtatás
+
+### 0. Gyors setup ellenőrzés (első lépés)
+
+```bash
+docker compose up --build
+```
+
+Ellenőrzés:
+- `http://localhost:3000` → látszik a `Budget Tracker` cím
+- `http://localhost:3001/health` → `{"status":"ok"}`
+
+Ha mindkettő működik, a környezet rendben van.
 
 ### Előfeltételek
 
