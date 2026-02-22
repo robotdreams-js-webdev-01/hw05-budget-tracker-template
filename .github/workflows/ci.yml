@@ -5,6 +5,10 @@ on:
     branches: ['**']
   pull_request:
 
+permissions:
+  pull-requests: write
+  contents: read
+
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
@@ -72,8 +76,16 @@ jobs:
       - name: Eredmények a pontozó számára
         run: cp test-results/jest-results.json ./jest-results.json 2>/dev/null || echo '{"numPassedTests":0,"numTotalTests":0}' > jest-results.json
 
-      - name: Pontszám kiszámítása
-        run: node .github/scripts/computeScore.js
+      - name: '📊 Pontozás és PR komment'
+        if: always()
+        env:
+          HW_ID: hw05
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          GITHUB_SERVER_URL: ${{ github.server_url }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_RUN_ID: ${{ github.run_id }}
+        run: node .github/scripts/computeScore.cjs
 
       - name: Pontszám feltöltése artifactként
         uses: actions/upload-artifact@v4

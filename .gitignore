@@ -4,6 +4,5 @@ dist/
 .env
 .env.local
 jest-results.json
-hints-usage.json
 hw*.score.json
 .hidden-tests/

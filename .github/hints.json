@@ -1,0 +1,58 @@
+{
+  "prisma/schema.prisma adatbázis séma létezik": {
+    "lesson": 22,
+    "tip": "Hozd létre a prisma/schema.prisma fájlt: npx prisma init"
+  },
+  "A séma Transaction modellt tartalmaz": {
+    "lesson": 22,
+    "tip": "Adj hozzá model Transaction { ... } blokkot a schema.prisma-ba"
+  },
+  "A Transaction modell amount mezőt tartalmaz": {
+    "lesson": 22,
+    "tip": "amount Float – add hozzá a Transaction modellhez"
+  },
+  "A Transaction modell elsődleges kulcsot definiál": {
+    "lesson": 22,
+    "tip": "id Int @id @default(autoincrement()) – 22. óra, Prisma schema rész"
+  },
+  "Az API Express-t importál": {
+    "lesson": 20,
+    "tip": "import express from 'express' – 20. óra, Express setup"
+  },
+  "Az API CORS middleware-t használ": {
+    "lesson": 20,
+    "tip": "npm install cors && app.use(cors())"
+  },
+  "Az API Prisma Client-et importál": {
+    "lesson": 22,
+    "tip": "import { PrismaClient } from '@prisma/client'"
+  },
+  "Az API POST tranzakció endpointot definiál": {
+    "lesson": 20,
+    "tip": "app.post('/transactions', async (req, res) => { ... })"
+  },
+  "Az API GET tranzakció endpointot definiál": {
+    "lesson": 20,
+    "tip": "app.get('/transactions', async (req, res) => { ... })"
+  },
+  "Az API Prisma create műveletet végez": {
+    "lesson": 22,
+    "tip": "await prisma.transaction.create({ data: req.body })"
+  },
+  "Az API Prisma findMany lekérdezést végez": {
+    "lesson": 22,
+    "tip": "await prisma.transaction.findMany()"
+  },
+  "A docker-compose.yml postgres service-t definiál": {
+    "lesson": 23,
+    "tip": "Adj hozzá postgres service-t a docker-compose.yml-hez – 23. óra, Docker rész"
+  },
+  "A docker-compose postgres healthcheck-et tartalmaz": {
+    "lesson": 23,
+    "tip": "healthcheck: test: ['CMD-SHELL', 'pg_isready -U postgres']"
+  },
+  "A .gitignore tartalmazza a .env fájlokat": {
+    "lesson": 20,
+    "tip": ".env sort add a .gitignore-hoz, de a .env.example-t NE ignoráld"
+  }
+}
