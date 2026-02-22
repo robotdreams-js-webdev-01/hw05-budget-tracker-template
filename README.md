@@ -22,11 +22,11 @@
 
 Implementáld az alábbi három endpointot:
 
-| Metódus | Végpont | Leírás |
-|---|---|---|
-| `POST` | `/transactions` | Új tranzakció létrehozása |
-| `GET` | `/transactions` | Összes tranzakció (dátum szerint csökkenő) |
-| `DELETE` | `/transactions/:id` | Tranzakció törlése |
+| Metódus  | Végpont             | Leírás                                     |
+| -------- | ------------------- | ------------------------------------------ |
+| `POST`   | `/transactions`     | Új tranzakció létrehozása                  |
+| `GET`    | `/transactions`     | Összes tranzakció (dátum szerint csökkenő) |
+| `DELETE` | `/transactions/:id` | Tranzakció törlése                         |
 
 Elvárt státuszkódok: `201` (create), `200` (list), `204` (delete), `404` (nem találta), `400` (hibás adat).
 
@@ -71,17 +71,18 @@ Szolgáltatások: `postgres` (5432), `api` (3001), `web` (3000)
 ### Tesztek
 
 Legalább **3 unit/integrációs teszt** CI-ben fusson. Példák:
+
 - API endpoint helyes státuszkódot ad vissza
 - Balance helyesen számolódik ki
 - Tranzakció törlés valóban eltűnik a listából
 
 ### Deploy
 
-| Rész | Platform |
-|---|---|
-| Frontend (`apps/web`) | Vercel |
-| Backend (`apps/api`) | Railway |
-| Adatbázis | Railway PostgreSQL VAGY Vercel Postgres |
+| Rész                  | Platform                                |
+| --------------------- | --------------------------------------- |
+| Frontend (`apps/web`) | Vercel                                  |
+| Backend (`apps/api`)  | Railway                                 |
+| Adatbázis             | Railway PostgreSQL VAGY Vercel Postgres |
 
 Az **élő URL-eket** írd bele a README-be!
 
@@ -95,17 +96,11 @@ Az **élő URL-eket** írd bele a README-be!
 
 ---
 
-## Pontozás (100 pont)
+## Pontozás
 
-| Kritérium | Pont |
-|---|---|
-| `apps/api/src/index.ts` TODO-k (POST/GET/DELETE + hibakezelés) | 30p |
-| `apps/web/app/page.tsx` TODO-k (fetch, form, lista, balance, loading/error) | 30p |
-| Prisma + migráció + DB kapcsolat | 20p |
-| Docker + README setup + deploy URL-k | 10p |
-| Min. 3 értelmes teszt | 10p |
-
-Megjegyzés: a vizuális/oktatói ellenőrzés kis arányú; a pontok többsége automatikusan adódik.
+- **Automatikus pont (CI tesztek):** max 68 p
+- **Manuális pont (deploy, CRUD él, error/loading – az oktató adja):** max 32 p
+- **Összesen:** 100 pont
 
 ---
 
@@ -118,6 +113,7 @@ docker compose up --build
 ```
 
 Ellenőrzés:
+
 - `http://localhost:3000` → látszik a `Budget Tracker` cím
 - `http://localhost:3001/health` → `{"status":"ok"}`
 

@@ -3,11 +3,11 @@ const path = require('path');
 const https = require('https');
 
 const HW_CONFIG = {
-  hw01: { maxPoints: 15, autoPoints: 10 },
-  hw02: { maxPoints: 35, autoPoints: 22 },
-  hw03: { maxPoints: 50, autoPoints: 34 },
-  hw04: { maxPoints: 75, autoPoints: 50 },
-  hw05: { maxPoints: 100, autoPoints: 68 },
+  hw01: { maxPoints: 15, autoPoints: 10, manualPointsMax: 5 },
+  hw02: { maxPoints: 35, autoPoints: 22, manualPointsMax: 13 },
+  hw03: { maxPoints: 50, autoPoints: 34, manualPointsMax: 16 },
+  hw04: { maxPoints: 75, autoPoints: 50, manualPointsMax: 25 },
+  hw05: { maxPoints: 100, autoPoints: 68, manualPointsMax: 32 },
 };
 
 const hwId = process.env.HW_ID;
@@ -26,9 +26,13 @@ try {
 const allTests = (results.testResults || []).flatMap(function (t) {
   return t.assertionResults || [];
 });
-const passed = allTests.filter(function (t) { return t.status === 'passed'; }).length;
+const passed = allTests.filter(function (t) {
+  return t.status === 'passed';
+}).length;
 const total = allTests.length;
-const failed = allTests.filter(function (t) { return t.status === 'failed'; });
+const failed = allTests.filter(function (t) {
+  return t.status === 'failed';
+});
 
 let hints = {};
 const hintsPath = path.join(process.cwd(), '.github', 'hints.json');
@@ -36,17 +40,41 @@ if (fs.existsSync(hintsPath)) {
   hints = JSON.parse(fs.readFileSync(hintsPath, 'utf8'));
 }
 
-const rawScore = total > 0 ? Math.floor(config.autoPoints * passed / total) : 0;
-const manualPoints = config.maxPoints - config.autoPoints;
+const rawScore = total > 0 ? Math.floor((config.autoPoints * passed) / total) : 0;
+const manualPointsMax = config.manualPointsMax;
 
-const runUrl = (process.env.GITHUB_SERVER_URL || '') + '/' + (process.env.GITHUB_REPOSITORY || '') + '/actions/runs/' + (process.env.GITHUB_RUN_ID || '');
+const runUrl =
+  (process.env.GITHUB_SERVER_URL || '') +
+  '/' +
+  (process.env.GITHUB_REPOSITORY || '') +
+  '/actions/runs/' +
+  (process.env.GITHUB_RUN_ID || '');
 
-const emoji = passed === total ? '\uD83D\uDFE2' : passed >= total * 0.7 ? '\uD83D\uDFE1' : '\uD83D\uDD34';
+const emoji =
+  passed === total ? '\uD83D\uDFE2' : passed >= total * 0.7 ? '\uD83D\uDFE1' : '\uD83D\uDD34';
 const lines = [];
-lines.push('## ' + emoji + ' ' + hwId.toUpperCase() + ' \u2013 Automatikus \u00E9rt\u00E9kel\u00E9s');
+lines.push(
+  '## ' + emoji + ' ' + hwId.toUpperCase() + ' \u2013 Automatikus \u00E9rt\u00E9kel\u00E9s'
+);
 lines.push('');
-lines.push('**Tesztek:** ' + passed + '/' + total + ' \u2705 | **Automatikus pontsz\u00E1m:** ' + rawScore + ' / ' + config.autoPoints + 'p');
-lines.push('**Oktat\u00F3i \u00E9rt\u00E9kel\u00E9s:** +' + manualPoints + 'p (manu\u00E1lis) | **Maximum:** ' + config.maxPoints + 'p');
+lines.push(
+  '**Tesztek:** ' +
+    passed +
+    '/' +
+    total +
+    ' \u2705 | **Automatikus pontsz\u00E1m:** ' +
+    rawScore +
+    ' / ' +
+    config.autoPoints +
+    'p'
+);
+lines.push(
+  '**Manu\u00E1lis pont** (diz\u00E1jn, deploy, stb. \u2013 az oktat\u00F3 adja): 0\u2013' +
+    manualPointsMax +
+    'p | **\u00D6sszes max:** ' +
+    config.maxPoints +
+    'p'
+);
 lines.push('\uD83D\uDD17 [CI fut\u00E1s r\u00E9szletei](' + runUrl + ')');
 
 if (failed.length > 0) {
@@ -69,7 +97,9 @@ if (failed.length > 0) {
   lines.push('\u2728 Minden teszt \u00E1tment \u2013 j\u00F3 munka!');
 }
 lines.push('');
-lines.push('> _Az automatikus pontsz\u00E1m el\u0151zetes. A v\u00E9gleges \u00E9rt\u00E9kel\u00E9s az oktat\u00F3i fel\u00FClvizsg\u00E1lat ut\u00E1n ker\u00FCl r\u00F6gz\u00EDt\u00E9sre._');
+lines.push(
+  '> _Az automatikus pontsz\u00E1m el\u0151zetes. A v\u00E9gleges pont = automatikus + manu\u00E1lis (oktat\u00F3i) pont._'
+);
 
 const comment = lines.join('\n');
 
@@ -77,6 +107,7 @@ const score = {
   homeworkId: hwId,
   maxPoints: config.maxPoints,
   autoPoints: config.autoPoints,
+  manualPointsMax: config.manualPointsMax,
   rawScore: rawScore,
   finalScore: rawScore,
   passedTests: passed,
@@ -104,7 +135,7 @@ const options = {
   path: '/repos/' + owner + '/' + repoName + '/issues/' + prNumber + '/comments',
   method: 'POST',
   headers: {
-    'Authorization': 'Bearer ' + token,
+    Authorization: 'Bearer ' + token,
     'Content-Type': 'application/json',
     'User-Agent': 'ci-score-bot',
     'X-GitHub-Api-Version': '2022-11-28',
@@ -115,6 +146,8 @@ const options = {
 const req = https.request(options, function (res) {
   console.log('PR komment st\u00E1tusz: ' + res.statusCode);
 });
-req.on('error', function (e) { console.error('PR komment hiba:', e.message); });
+req.on('error', function (e) {
+  console.error('PR komment hiba:', e.message);
+});
 req.write(body);
 req.end();
