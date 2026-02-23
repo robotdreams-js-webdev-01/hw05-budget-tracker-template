@@ -88,6 +88,10 @@ Az **élő URL-eket** írd bele a README-be!
 
 ---
 
+## Amit a sablon már ad
+
+A sablon tartalmazza: monorepo szerkezet (apps/api, apps/web), Prisma sémát, Express + CORS + JSON body, health endpointot, docker-compose vázat, frontend oldal vázat (form, lista helye). **Neked kell megvalósítanod:** a POST/GET/DELETE tranzakció endpointokat Prisma create/findMany/delete-pel, a frontend fetch/state/balance/loading/error/törlés logikát, és a README-be az élő URL-t.
+
 ## Minimum elvárások
 
 - A CRUD az deployed URL-en működik

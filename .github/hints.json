@@ -1,39 +1,19 @@
 {
-  "prisma/schema.prisma adatbázis séma létezik": {
+  "Az API Prisma Client-et importál vagy példányosít": {
     "lesson": 22,
-    "tip": "Hozd létre a prisma/schema.prisma fájlt: npx prisma init"
-  },
-  "A séma Transaction modellt tartalmaz": {
-    "lesson": 22,
-    "tip": "Adj hozzá model Transaction { ... } blokkot a schema.prisma-ba"
-  },
-  "A Transaction modell amount mezőt tartalmaz": {
-    "lesson": 22,
-    "tip": "amount Float – add hozzá a Transaction modellhez"
-  },
-  "A Transaction modell elsődleges kulcsot definiál": {
-    "lesson": 22,
-    "tip": "id Int @id @default(autoincrement()) – 22. óra, Prisma schema rész"
-  },
-  "Az API Express-t importál": {
-    "lesson": 20,
-    "tip": "import express from 'express' – 20. óra, Express setup"
-  },
-  "Az API CORS middleware-t használ": {
-    "lesson": 20,
-    "tip": "npm install cors && app.use(cors())"
-  },
-  "Az API Prisma Client-et importál": {
-    "lesson": 22,
-    "tip": "import { PrismaClient } from '@prisma/client'"
+    "tip": "import { PrismaClient } from '@prisma/client'; const prisma = new PrismaClient()"
   },
   "Az API POST tranzakció endpointot definiál": {
     "lesson": 20,
-    "tip": "app.post('/transactions', async (req, res) => { ... })"
+    "tip": "app.post('/transactions', async (req, res) => { await prisma.transaction.create(...) })"
   },
   "Az API GET tranzakció endpointot definiál": {
     "lesson": 20,
-    "tip": "app.get('/transactions', async (req, res) => { ... })"
+    "tip": "app.get('/transactions', async (req, res) => { await prisma.transaction.findMany(...) })"
+  },
+  "Az API DELETE tranzakció endpointot definiál": {
+    "lesson": 20,
+    "tip": "app.delete('/transactions/:id', ...) – 204 vagy 404"
   },
   "Az API Prisma create műveletet végez": {
     "lesson": 22,
@@ -41,11 +21,47 @@
   },
   "Az API Prisma findMany lekérdezést végez": {
     "lesson": 22,
-    "tip": "await prisma.transaction.findMany()"
+    "tip": "await prisma.transaction.findMany({ orderBy: { date: 'desc' } })"
+  },
+  "Az API Prisma delete műveletet végez": {
+    "lesson": 22,
+    "tip": "await prisma.transaction.delete({ where: { id } })"
+  },
+  "A frontend useState hookot importál vagy használ": {
+    "lesson": 20,
+    "tip": "import { useState } from 'react'; pl. transactions, isLoading, error"
+  },
+  "A frontend useEffect hookot importál vagy használ": {
+    "lesson": 20,
+    "tip": "useEffect(() => { fetch(API_URL + '/transactions').then(...) }, [])"
+  },
+  "A frontend fetch API-t hív": {
+    "lesson": 20,
+    "tip": "fetch(process.env.NEXT_PUBLIC_API_URL + '/transactions')"
+  },
+  "A frontend POST kérést küld új tranzakcióhoz": {
+    "lesson": 20,
+    "tip": "fetch(..., { method: 'POST', body: JSON.stringify(...) })"
+  },
+  "A frontend egyenleget (balance) számít": {
+    "lesson": 20,
+    "tip": "transactions.reduce((sum, t) => sum + t.amount, 0) vagy külön bevétel/kiadás"
+  },
+  "A frontend loading állapotot kezel": {
+    "lesson": 20,
+    "tip": "isLoading state, betöltés előtt/után; jelenj meg loading üzenet"
+  },
+  "A frontend hibaállapotot kezel": {
+    "lesson": 20,
+    "tip": "error state, catch-ben beállítás; jelenj meg hibaüzenet"
+  },
+  "A frontend törlési funkciót tartalmaz": {
+    "lesson": 20,
+    "tip": "DELETE /transactions/:id hívás, majd lista frissítése"
   },
   "A docker-compose.yml postgres service-t definiál": {
     "lesson": 23,
-    "tip": "Adj hozzá postgres service-t a docker-compose.yml-hez – 23. óra, Docker rész"
+    "tip": "A sablonban már van – ne töröld; ha hiányzik, add hozzá postgres szolgáltatást"
   },
   "A docker-compose postgres healthcheck-et tartalmaz": {
     "lesson": 23,
@@ -53,6 +69,10 @@
   },
   "A .gitignore tartalmazza a .env fájlokat": {
     "lesson": 20,
-    "tip": ".env sort add a .gitignore-hoz, de a .env.example-t NE ignoráld"
+    "tip": ".env sort add a .gitignore-hoz (de .env.example ne legyen ignorálva)"
+  },
+  "A README tartalmaz deployed URL-t": {
+    "lesson": 20,
+    "tip": "Deploy után másold be a frontend és API URL-t a README-be"
   }
 }
