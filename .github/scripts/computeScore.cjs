@@ -122,7 +122,7 @@ console.log(JSON.stringify(score, null, 2));
 if (process.env.GITHUB_STEP_SUMMARY) {
   const summaryTable =
     '\n## Pontozás\n\n' +
-    '| Összes teszt | Sikeres | Nyers pont (auto) | Manuális max | Összes max |\n' +
+    '| Összes teszt | Sikeres | Nyers pont (auto) | Oktatói pontok | Összes max |\n' +
     '|--------------|---------|-------------------|--------------|------------|\n' +
     '| ' +
     total +
