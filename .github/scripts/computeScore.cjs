@@ -118,6 +118,28 @@ const scorePath = path.join(process.cwd(), hwId + '-score.json');
 fs.writeFileSync(scorePath, JSON.stringify(score, null, 2));
 console.log(JSON.stringify(score, null, 2));
 
+// GitHub Actions Step Summary: pontozó táblázat
+if (process.env.GITHUB_STEP_SUMMARY) {
+  const summaryTable =
+    '\n## Pontozás\n\n' +
+    '| Összes teszt | Sikeres | Nyers pont (auto) | Manuális max | Összes max |\n' +
+    '|--------------|---------|-------------------|--------------|------------|\n' +
+    '| ' +
+    total +
+    ' | ' +
+    passed +
+    ' | **' +
+    rawScore +
+    '** / ' +
+    config.autoPoints +
+    'p | 0–' +
+    manualPointsMax +
+    'p | ' +
+    config.maxPoints +
+    'p |\n';
+  fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, summaryTable);
+}
+
 const prNumber = process.env.PR_NUMBER;
 const token = process.env.GITHUB_TOKEN;
 const repo = (process.env.GITHUB_REPOSITORY || '/').split('/');
